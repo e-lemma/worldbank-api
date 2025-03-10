@@ -11,6 +11,10 @@ assignees: ''
 
 As a [type of user] I want to be able to [description] so that [benefit].
 
+## Description
+
+A clear and concise description of the task.
+
 ## ✅ Acceptance Criteria
 
 - [ ] Criteria 1
