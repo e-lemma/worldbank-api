@@ -12,8 +12,8 @@ A clear and concise description of the quick fix.
 
 ## Changes Made
 
-- [ ] Describe the specific changes (e.g., "Added `*.log` to .gitignore").
+- [ ] Describe the specific changes required (e.g., "Add `*.log` to .gitignore").
 
 ## Justification
 
-Explain why this change is necessary (e.g., "Prevents log files from being tracked in version control").
+Explain why this change is necessary (e.g., "To Prevent log files from being tracked in version control").
