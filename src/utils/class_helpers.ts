@@ -31,24 +31,38 @@ interface CountryInfo {
   LatestTradeData: string
   LatestWaterWithdrawalData: string
 }
-
-interface Indicator {
+class Indicator {
     IndicatorName: string
     IndicatorCode: string
     Year: number
     Value: number
+
+    constructor(indicatorName: string, indicatorCode: string, year: number, value: number){
+        this.IndicatorName = indicatorName
+        this.IndicatorCode = indicatorCode
+        this.Year = year
+        this.Value = value
+    }
 }
 
 class CountryIndicator {
-    CountryName: string
     CountryCode: string
-    Indicators: Indicator[]
+    CountryName: string
+    IndicatorName: string
+    IndicatorCode: string
+    Year: number
+    Value: number
 
 
-    constructor(countryName: string, countryCode: string, indicators: Indicator[]){
+    constructor(countryName: string, countryCode: string, indicatorName: string, 
+                indicatorCode: string, year: number, value: number){
+            
         this.CountryName = countryName
         this.CountryCode = countryCode
-        this.Indicators = indicators
+        this.IndicatorName = indicatorName
+        this.IndicatorCode = indicatorCode
+        this.Year = year
+        this.Value = value
     }
 }
 

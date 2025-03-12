@@ -1,3 +1,4 @@
+import { once } from "events"
 import fs from "fs"
 import path from "path"
 
@@ -6,7 +7,7 @@ import {BatchWriteCommand, DynamoDBDocumentClient} from "@aws-sdk/lib-dynamodb"
 import { parse } from "csv-parse"
 import dotenv from 'dotenv'
 
-import { CountryInfo } from "./helpers" 
+import { CountryInfo } from "./class_helpers" 
 
 dotenv.config()
 
@@ -25,27 +26,21 @@ function connectToClient(){
     return docClient
 }
 
-async function readFile() {
-    const filePath = path.resolve(__dirname, "../../../src/utils/archive/Country.csv")
+async function readFile(fileName: string) {
+    const filePath: string = path.resolve(__dirname, "../../../src/utils/archive", fileName)
     const records: CountryInfo[] = []
 
-    await new Promise<void>((resolve, reject) => {
-        fs.createReadStream(filePath)
-            .pipe(parse({ delimiter: ",", from_line: 1, columns: true }))
-            .on("data", function (row) {
-                const country: CountryInfo = row
-                console.log(`Processing data for: ${country.ShortName}`)
-                records.push(country)
-            })
-            .on("end", function () {
-                console.log("Finished processing CSV.")
-                resolve() 
-            })
-            .on("error", function (error) {
-                console.log(error.message)
-                reject(error)
-            })
+    const stream = fs.createReadStream(filePath).pipe(parse({ delimiter: ",", from_line: 1, columns: true }))
+
+    stream.on("data", (row) => {
+        const country: CountryInfo = row
+        console.log(`Processing data for: ${country.ShortName}`)
+        records.push(country)
     })
+
+    await once(stream, "end")
+    console.log("Finished processing CSV.")
+
     return records
 }
 
@@ -75,7 +70,7 @@ async function uploadData(records: CountryInfo[], docClient: DynamoDBClient) {
 
 async function main() {
     const docClient = connectToClient()
-    const records = await readFile()
+    const records = await readFile("Country.csv")
     await uploadData(records, docClient)
 }
 
