@@ -31,19 +31,6 @@ interface CountryInfo {
   LatestTradeData: string
   LatestWaterWithdrawalData: string
 }
-class Indicator {
-    IndicatorName: string
-    IndicatorCode: string
-    Year: number
-    Value: number
-
-    constructor(indicatorName: string, indicatorCode: string, year: number, value: number){
-        this.IndicatorName = indicatorName
-        this.IndicatorCode = indicatorCode
-        this.Year = year
-        this.Value = value
-    }
-}
 
 class CountryIndicator {
     CountryCode: string
@@ -66,4 +53,4 @@ class CountryIndicator {
     }
 }
 
-export {CountryInfo, Indicator, CountryIndicator}
+export {CountryInfo, CountryIndicator}
