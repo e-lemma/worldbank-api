@@ -25,14 +25,38 @@ function connectToClient(){
     return docClient
 }
 
+function parseCountryRow(row: any): CountryInfo {
+    const numericFields = new Set([
+    "NationalAccountsBaseYear",
+    "NationalAccountsReferenceYear",
+    "LatestTradeData",
+    "LatestAgriculturalCensus",
+    "LatestIndustrialData",
+    "LatestWaterWithdrawalData",
+    "LatestPopulationCensus",
+    "PppSurveyYear"
+    ])
+    const parsedRow: any = { ...row }
+
+    for (const key of numericFields) {
+        if (row[key] && !isNaN(row[key])) {
+        parsedRow[key] = parseInt(row[key])
+        }
+    }
+
+  return parsedRow as CountryInfo
+}
+
 async function readFile(fileName: string) {
     const filePath: string = path.resolve(__dirname, "../../../src/utils/archive", fileName)
     const records: CountryInfo[] = []
 
     const stream = fs.createReadStream(filePath).pipe(parse({ delimiter: ",", from_line: 1, columns: true }))
 
+
+
     stream.on("data", (row) => {
-        const country: CountryInfo = row
+        const country: CountryInfo = parseCountryRow(row)
         console.log(`Processing data for: ${country.ShortName}`)
         records.push(country)
     })
