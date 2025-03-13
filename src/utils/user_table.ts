@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const REGION = process.env.AWS_REGION || 'eu-west-2'
-const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME || 'wb-api-users'
+const TABLE_NAME = process.env.DYNAMODB_USER_TABLE_NAME || 'wb-api-users'
 
 const client = new DynamoDBClient({
   region: REGION,
