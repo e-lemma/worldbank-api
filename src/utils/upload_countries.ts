@@ -12,7 +12,6 @@ import { CountryInfo } from "./class_helpers"
 dotenv.config()
 
 function connectToClient(){
-    
     const client = new DynamoDBClient({
         region: process.env.AWS_REGION,
         credentials: {
