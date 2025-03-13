@@ -37,6 +37,7 @@ async function getCountry(search: string, docClient: DynamoDBDocumentClient) {
 }
 
 async function main() {
+    
     const docClient = connectToClient()
     await getCountry("AB", docClient)
     
