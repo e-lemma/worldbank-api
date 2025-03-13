@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const REGION = process.env.AWS_REGION || 'eu-west-2'
-const TABLE_NAME = process.env.DYNAMODB_USER_TABLE_NAME || 'wb-api-users'
+const TABLE_NAME = process.env.DYNAMODB_HISTORY_TABLE_NAME || 'wb-api-history'
 
 const client = new DynamoDBClient({
   region: REGION,
@@ -17,14 +17,22 @@ const main = async () => {
     TableName: TABLE_NAME,
     AttributeDefinitions: [
       {
-        AttributeName: 'email',
+        AttributeName: 'userId',
         AttributeType: 'S'
+      },
+      {
+        AttributeName: 'timestamp',
+        AttributeType: 'N'
       }
     ],
     KeySchema: [
       {
-        AttributeName: 'email',
+        AttributeName: 'userId',
         KeyType: 'HASH'
+      },
+      {
+        AttributeName: 'timestamp',
+        KeyType: 'RANGE'
       }
     ],
     BillingMode: 'PAY_PER_REQUEST'
