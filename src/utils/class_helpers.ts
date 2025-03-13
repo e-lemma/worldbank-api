@@ -33,6 +33,7 @@ interface CountryInfo {
 }
 
 class CountryIndicator {
+    
     CountryCode: string
     CountryName: string
     IndicatorName: string
