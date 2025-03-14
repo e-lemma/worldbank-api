@@ -2,16 +2,16 @@
   "name": "worldbank-api",
   "version": "1.0.0",
   "description": "A highly scalable microservices-based API for accessing World Bank data, built with TypeScript and fully deployed on AWS serverless architecture",
-  "main": "index.js",
+  "main": "./index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "repository": {
     "type": "git",
