@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A highly scalable microservices-based API for accessing World Bank data, built with TypeScript and fully deployed on AWS serverless architecture",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
