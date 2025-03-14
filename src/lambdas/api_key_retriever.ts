@@ -19,7 +19,7 @@ export class AccessKeyRetriever {
     this.secretName = secretName
   }
 
-  public async getSecretValue(): Promise<string | undefined> {
+  public async getSecretObject(): Promise<Record<string, string>> {
     try {
       const response = await this.client.send(
         new GetSecretValueCommand({
@@ -27,10 +27,29 @@ export class AccessKeyRetriever {
           VersionStage: 'AWSCURRENT'
         })
       )
-      return response.SecretString
+
+      if (!response.SecretString) {
+        throw new Error('API key not found.')
+      }
+
+      return JSON.parse(response.SecretString)
     } catch (error) {
       console.error('Error retrieving API key:', error)
       throw error
     }
+  }
+
+  static async retrieveApiKey(
+    region?: string,
+    secretName?: string
+  ): Promise<string> {
+    const retriever = new AccessKeyRetriever(region, secretName)
+    const keyObject = await retriever.getSecretObject()
+
+    if (!keyObject.api_key) {
+      throw new Error('API key property not found in the secret')
+    }
+
+    return keyObject.api_key // API KEY
   }
 }
