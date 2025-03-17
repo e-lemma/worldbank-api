@@ -5,11 +5,8 @@ import {
   GetCommand,
   QueryCommand
 } from '@aws-sdk/lib-dynamodb'
-import { configDotenv } from 'dotenv'
 
 import { User, SearchHistory } from './models'
-
-configDotenv()
 
 export class HistoryService {
   private readonly client: DynamoDBDocumentClient
@@ -75,12 +72,3 @@ export class HistoryService {
     }
   }
 }
-
-async function main() {
-  console.log('starting...')
-  const histSer = new HistoryService()
-  const userId = await histSer.getUserId('johndoe@email.com')
-  histSer.getUserHistory(userId)
-}
-
-main()

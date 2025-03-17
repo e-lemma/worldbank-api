@@ -1,6 +1,6 @@
 import { DynamoDBClient, GetItemCommand } from '@aws-sdk/client-dynamodb'
 
-export const handler = async (event) => {
+export const handler = async (event: any) => {
   try {
     /**
      * get access key from query params
