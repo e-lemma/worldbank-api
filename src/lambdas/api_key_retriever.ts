@@ -50,6 +50,6 @@ export class AccessKeyRetriever {
       throw new Error('API key property not found in the secret')
     }
 
-    return keyObject.api_key // API KEY
+    return keyObject.api_key
   }
 }
