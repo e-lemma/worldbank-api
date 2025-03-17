@@ -1,16 +1,3 @@
-export class AccessKeyAuthenticator {
-  private validKey: string
-
-  constructor(apiKey: string) {
-    this.validKey = apiKey
-  }
-
-  verify(accessKey: string | undefined): boolean {
-    if (!accessKey) return false
-    return accessKey === this.validKey
-  }
-}
-
 export class AccountDetailsAuthenticator {
   static async verifyPassword() {}
 
