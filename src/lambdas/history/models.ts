@@ -3,20 +3,17 @@ export class SearchHistory {
   timestamp: string // Sort key
   queryType: string
   parameters: Record<string, string[]> // Countries, Indicators
-  resultSummary: string
 
   constructor(data: {
     userId: string
     timestamp: string
     queryType: string
     parameters: Record<string, string[]>
-    resultSummary: string
   }) {
     this.userId = data.userId
     this.timestamp = data.timestamp
     this.queryType = data.queryType
     this.parameters = data.parameters
-    this.resultSummary = data.resultSummary
   }
 }
 
