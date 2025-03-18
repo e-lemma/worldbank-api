@@ -17,7 +17,7 @@ const main = async () => {
     TableName: TABLE_NAME,
     AttributeDefinitions: [
       {
-        AttributeName: 'userId',
+        AttributeName: 'accessToken',
         AttributeType: 'S'
       },
       {
@@ -27,7 +27,7 @@ const main = async () => {
     ],
     KeySchema: [
       {
-        AttributeName: 'userId',
+        AttributeName: 'accessToken',
         KeyType: 'HASH'
       },
       {
