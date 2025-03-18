@@ -40,10 +40,9 @@
     "typescript-eslint": "^8.26.1"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.758.0",
-    "@aws-sdk/credential-providers": "^3.758.0",
-    "@aws-sdk/lib-dynamodb": "^3.758.0",
-    "csv-parse": "^5.6.0",
-    "dotenv": "^16.4.7"
+    "@aws-sdk/client-s3": "^3.758.0",
+    "@types/inquirer": "^9.0.7",
+    "aws-sdk": "^2.1692.0",
+    "inquirer": "^12.4.3"
   }
 }
