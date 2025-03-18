@@ -1,9 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb"
-import {DynamoDBDocumentClient, ScanCommand} from "@aws-sdk/lib-dynamodb"
+import {DynamoDBDocumentClient, ScanCommand, PutCommand} from "@aws-sdk/lib-dynamodb"
 import { Handler, APIGatewayProxyEvent, APIGatewayProxyEventQueryStringParameters} from 'aws-lambda'
 import dotenv from 'dotenv'
 
+import { Search } from "./helpers"
+
 dotenv.config()
+
 function connectToClient(){
     const client = new DynamoDBClient({
         region: process.env.AWS_REGION,
@@ -17,6 +20,7 @@ function connectToClient(){
 
     return docClient
 }
+
 async function scanCountryIndicators(filters: APIGatewayProxyEventQueryStringParameters, docClient: DynamoDBDocumentClient) {
   const filterExpressions: string[] = []
   const expressionAttributeValues: Record<string, unknown> = {}
@@ -55,35 +59,110 @@ async function scanCountryIndicators(filters: APIGatewayProxyEventQueryStringPar
   return response.Items
 }
 
-export const handler: Handler =  async(event: APIGatewayProxyEvent) => {
+async function addToHistory(userSearch: Search, docClient: DynamoDBClient) {
+    const command = new PutCommand({
+        TableName: "wb-api-history",
+        Item: {
+            accessToken: userSearch.accessToken,
+            timestamp: userSearch.timestamp,
+            parameters: userSearch.parameters,
+            queryType: "country_indicator"
+
+        }
+    })
+    const response = await docClient.send(command)
+    return response
+
+}
+
+async function createSearch(
+  accessToken: string,
+  parameters: APIGatewayProxyEventQueryStringParameters,
+  countryCodes?: string[]
+) {
+  const fullParams: APIGatewayProxyEventQueryStringParameters = { 
+    ...parameters, 
+    CountryCode: countryCodes?.length 
+      ? countryCodes.join(",") 
+      : parameters.CountryCode  
+  }
+
+  const searchDate = new Date().toISOString()
+  const newSearch = new Search(accessToken, searchDate, fullParams)
+
+  return newSearch
+}
+
+export const handler: Handler = async (event: APIGatewayProxyEvent) => {
+    const requestDate = new Date().toISOString()
     try {
         const docClient = connectToClient()
-        const countries = event.multiValueQueryStringParameters?.CountryCode
-        const parameters = event.queryStringParameters!
-        const data = []
-        if (countries) {
-            for (const country of countries) {
-            const countryParams = { ...parameters, CountryCode: country }
-            const countryData = await scanCountryIndicators(countryParams, docClient)
-            data.push(countryData)
+        if (!event.queryStringParameters) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ error: "Missing query parameters." }),
+                date: requestDate,
             }
+        }
+        const parameters = { ...event.queryStringParameters }
+        const accessToken = parameters["accessToken"]
+        delete parameters["accessToken"]
+
+        if (!accessToken) {
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ error: "Missing access token." }),
+                date: requestDate,
+            }
+        }
+        const countries = event.multiValueQueryStringParameters?.CountryCode
+
+        const data = []
+
+        if (countries && countries.length > 0) {
+            for (const country of countries) {
+                const countryParams = { ...parameters, CountryCode: country }
+                const countryData = await scanCountryIndicators(countryParams, docClient)
+                data.push(countryData)
+            }
+            const searchData: Search = await createSearch(accessToken, parameters, countries)
+            console.log(searchData)
+            await addToHistory(searchData, docClient)
+
+
         } else {
+            if (!parameters["CountryCode"]) {
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ error: "Missing CountryCode parameter." }),
+                    date: requestDate,
+                }
+            }
+
             const countryData = await scanCountryIndicators(parameters, docClient)
             data.push(countryData)
+
+            const searchData: Search = await createSearch(accessToken, parameters)
+            console.log(searchData)
+            await addToHistory(searchData, docClient)
         }
-       return {
+
+        return {
             statusCode: 200,
             body: JSON.stringify(data.flat()),
+            date: requestDate,
         }
-        
+
     } catch (error) {
+        console.error("Error processing request:", error)
+
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: error }),
+            body: JSON.stringify({
+                error: "Internal Server Error",
+                details: error instanceof Error ? error.message : String(error),
+            }),
+            date: requestDate,
         }
     }
 }
-
-
-
-
