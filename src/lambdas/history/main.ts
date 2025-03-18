@@ -1,8 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { configDotenv } from 'dotenv'
 
-import { AccessKeyRetriever } from '../api_key_retriever'
-import { UserService, HistoryService } from './services'
+import { HistoryService } from './services'
 
 export const handler = async (
   event: APIGatewayProxyEvent
@@ -10,35 +9,19 @@ export const handler = async (
   try {
     configDotenv()
 
-    const apiKey = event.queryStringParameters?.api_key
-    if (!apiKey || apiKey !== (await AccessKeyRetriever.retrieveApiKey())) {
+    const accessToken = event.queryStringParameters?.api_key
+    if (!accessToken) {
       return {
         statusCode: 401,
         body: JSON.stringify({
           error: 'Unauthorised',
-          message: 'Missing or invalid API key'
+          message: 'Missing access token'
         })
       }
     }
-    const userEmail = event.queryStringParameters?.email
-    const userPass = event.queryStringParameters?.password
-    const userService = new UserService(process.env.AWS_REGION)
-    if (
-      !userEmail ||
-      !userPass ||
-      !(await userService.authenticateCredentials(userEmail, userPass))
-    ) {
-      return {
-        statusCode: 401,
-        body: JSON.stringify({
-          error: 'Unauthorised',
-          message: 'Missing or invalid account credentials'
-        })
-      }
-    }
+
     const historyService = new HistoryService(process.env.AWS_REGION)
-    const matchingUserId = await historyService.getUserId(userEmail)
-    const historyData = historyService.getUserHistory(matchingUserId)
+    const historyData = await historyService.getUserHistory(accessToken)
     return {
       statusCode: 200,
       body: JSON.stringify({

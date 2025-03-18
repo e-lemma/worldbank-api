@@ -4,10 +4,3 @@ export interface SearchHistory {
   queryType: string
   parameters: Record<string, string[]> // Countries, Indicators
 }
-
-export interface User {
-  email: string // Partition Key
-  userId: string
-  password: string
-  createdAt: string
-}
