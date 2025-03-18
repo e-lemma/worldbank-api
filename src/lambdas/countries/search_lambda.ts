@@ -126,7 +126,6 @@ export const handler: Handler = async (event: APIGatewayProxyEvent) => {
                 data.push(countryData)
             }
             const searchData: Search = await createSearch(accessToken, parameters, countries)
-            console.log(searchData)
             await addToHistory(searchData, docClient)
 
 
@@ -143,7 +142,6 @@ export const handler: Handler = async (event: APIGatewayProxyEvent) => {
             data.push(countryData)
 
             const searchData: Search = await createSearch(accessToken, parameters)
-            console.log(searchData)
             await addToHistory(searchData, docClient)
         }
 
