@@ -9,7 +9,7 @@ export const handler = async (
   try {
     configDotenv()
 
-    const accessToken = event.queryStringParameters?.api_key
+    const accessToken = event.queryStringParameters?.access_token
     if (!accessToken) {
       return {
         statusCode: 401,
@@ -24,9 +24,13 @@ export const handler = async (
     const historyData = await historyService.getUserHistory(accessToken)
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        message: historyData
-      })
+      body: JSON.stringify(
+        {
+          message: historyData
+        },
+        null,
+        2
+      )
     }
   } catch (error) {
     console.error('Error:', error)
