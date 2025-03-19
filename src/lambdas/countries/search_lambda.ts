@@ -59,14 +59,14 @@ async function scanCountryIndicators(filters: APIGatewayProxyEventQueryStringPar
   return response.Items
 }
 
-async function addToHistory(userSearch: Search, docClient: DynamoDBClient) {
+async function addToHistory(userSearch: Search, queryType: string, docClient: DynamoDBClient) {
     const command = new PutCommand({
         TableName: "wb-api-history",
         Item: {
             accessToken: userSearch.accessToken,
             timestamp: userSearch.timestamp,
             parameters: userSearch.parameters,
-            queryType: "country_indicator"
+            queryType: queryType
 
         }
     })
@@ -126,7 +126,7 @@ export const handler: Handler = async (event: APIGatewayProxyEvent) => {
                 data.push(countryData)
             }
             const searchData: Search = await createSearch(accessToken, parameters, countries)
-            await addToHistory(searchData, docClient)
+            await addToHistory(searchData, "comparison", docClient)
 
 
         } else {
@@ -142,7 +142,7 @@ export const handler: Handler = async (event: APIGatewayProxyEvent) => {
             data.push(countryData)
 
             const searchData: Search = await createSearch(accessToken, parameters)
-            await addToHistory(searchData, docClient)
+            await addToHistory(searchData, "country_indicator", docClient)
         }
 
         return {

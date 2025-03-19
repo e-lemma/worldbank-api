@@ -7,7 +7,7 @@ import {BatchWriteCommand, DynamoDBDocumentClient} from "@aws-sdk/lib-dynamodb"
 import { parse } from "csv-parse"
 import dotenv from 'dotenv'
 
-import { CountryInfo } from "./class_helpers" 
+import { CountryInfo} from "./class_helpers" 
 
 dotenv.config()
 
@@ -39,12 +39,14 @@ function parseCountryRow(row: any): CountryInfo {
     const parsedRow: any = { ...row }
 
     for (const key of numericFields) {
-        if (row[key] && !isNaN(row[key])) {
-        parsedRow[key] = parseInt(row[key])
+        const value = row[key]
+
+        if (typeof value === "string" && !isNaN(Number(value))) {
+            parsedRow[key] = parseInt(value, 10) 
         }
     }
 
-  return parsedRow as CountryInfo
+    return parsedRow as CountryInfo
 }
 
 async function readFile(fileName: string) {
