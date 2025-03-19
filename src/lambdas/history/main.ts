@@ -3,12 +3,12 @@ import { configDotenv } from 'dotenv'
 
 import { HistoryService } from './services'
 
+configDotenv()
+
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
-    configDotenv()
-
     const accessToken = event.queryStringParameters?.access_token
     if (!accessToken) {
       return {
@@ -24,9 +24,7 @@ export const handler = async (
     const historyData = await historyService.getUserHistory(accessToken)
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        message: historyData
-      })
+      body: JSON.stringify(historyData)
     }
   } catch (error) {
     console.error('Error:', error)
