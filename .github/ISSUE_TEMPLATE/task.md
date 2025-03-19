@@ -1,10 +1,9 @@
 ---
 name: "Task \U0001F4CC"
 about: A general development task
-title: "[Task]: "
+title: '[Task]: '
 labels: task
 assignees: ''
-
 ---
 
 ## User Story
@@ -34,4 +33,5 @@ A clear and concise description of the task.
 - [ ] Task 3
 
 ## Notes
+
 Any additional information, context, or reference links.
