@@ -1,6 +1,3 @@
-import { APIGatewayEvent, Context, Callback } from "aws-lambda";
-import lambdaLocal from "lambda-local";
-import path from "path";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { SecretsManagerClient, CreateSecretCommand } from "@aws-sdk/client-secrets-manager";
 import { DynamoDBDocumentClient, PutCommand, ScanCommand,GetCommand } from "@aws-sdk/lib-dynamodb";
@@ -59,7 +56,7 @@ export class Page {
             return [];
         }
     }
-    async checkPassword(email: string, pass:string,key: string,client: DynamoDBDocumentClient): Promise<boolean>{
+    async checkPassword(email: string, pass:string,client: DynamoDBDocumentClient): Promise<boolean>{
         const command = new GetCommand({
             TableName: "wb-api-users",
             Key: {email: email},
@@ -71,7 +68,7 @@ export class Page {
         }
         return false
     }
-    async loginUser (email: string,pass: string,key: string,client: DynamoDBDocumentClient){
+    async loginUser (email: string,pass: string,client: DynamoDBDocumentClient){
         const checkList = await this.getExistingUsers(client)
 
         if (checkList.includes(email)){
@@ -80,10 +77,11 @@ export class Page {
             Key: {email: email},
             })
             const response = await client.send(command)
+            const userKey = response.Item?.accessToken
             const checkPass = await this.checkPassword(email,pass,client)
 
             if (checkPass){
-                console.log(this.createSecret(key))
+                console.log(this.createSecret(userKey))
             }
             return {
                 statusCode: 200,
