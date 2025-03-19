@@ -24,13 +24,9 @@ export const handler = async (
     const historyData = await historyService.getUserHistory(accessToken)
     return {
       statusCode: 200,
-      body: JSON.stringify(
-        {
-          message: historyData
-        },
-        null,
-        2
-      )
+      body: JSON.stringify({
+        message: historyData
+      })
     }
   } catch (error) {
     console.error('Error:', error)
