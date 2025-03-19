@@ -17,17 +17,17 @@ const main = async () => {
     TableName: TABLE_NAME,
     AttributeDefinitions: [
       {
-        AttributeName: 'userId',
+        AttributeName: 'accessToken',
         AttributeType: 'S'
       },
       {
         AttributeName: 'timestamp',
-        AttributeType: 'N'
+        AttributeType: 'S'
       }
     ],
     KeySchema: [
       {
-        AttributeName: 'userId',
+        AttributeName: 'accessToken',
         KeyType: 'HASH'
       },
       {
