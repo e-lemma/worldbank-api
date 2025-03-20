@@ -24,7 +24,7 @@ export class HistoryService {
   async isValidToken(accessToken: string): Promise<boolean> {
     const command = new QueryCommand({
       TableName: this.userTable,
-      IndexName: 'AccessTokenIndex',
+      IndexName: 'accessToken-index',
       ExpressionAttributeValues: {
         ':accessToken': accessToken
       },
