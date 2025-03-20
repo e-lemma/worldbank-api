@@ -9,11 +9,7 @@ dotenv.config();
 export class Page {
     clientConnection(){
         const client = new DynamoDBClient({
-            region: "eu-west-2",
-            credentials:{
-                accessKeyId: process.env.AWS_ACCESS_KEY!,
-                secretAccessKey: process.env.AWS_SECRET_KEY!
-            }
+            region: "eu-west-2"
         })
         return DynamoDBDocumentClient.from(client)
     }
@@ -23,7 +19,8 @@ export class Page {
             Item: {
                 email: email,
                 password: pass,
-                accessToken:key
+                accessToken:key,
+                createdAt: new Date().toISOString()
             }
         })
         try {
@@ -116,7 +113,7 @@ export class Page {
     }
 };
 
-const handler = async (event: {new: boolean,email:string,password:string})=>{
+export const handler = async (event: {new: boolean,email:string,password:string})=>{
     const newPage = new Page();
     const client = newPage.clientConnection()
     const email = event.email
