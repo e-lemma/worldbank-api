@@ -7,6 +7,7 @@ import { SearchHistory, PublicSearchHistory } from './models'
 export class HistoryService {
   private readonly client: DynamoDBDocumentClient
   private readonly historyTable: string
+  private readonly userTable: string
 
   constructor(region: string = process.env.AWS_REGION || 'eu-west-2') {
     const baseClient = new DynamoDBClient({
@@ -17,6 +18,22 @@ export class HistoryService {
     this.client = DynamoDBDocumentClient.from(baseClient)
     this.historyTable =
       process.env.DYNAMODB_HISTORY_TABLE_NAME || 'wb-api-history'
+    this.userTable = process.env.DYNAMODB_USER_TABLE_NAME || 'wb-api-users'
+  }
+
+  async isValidToken(accessToken: string): Promise<boolean> {
+    const command = new QueryCommand({
+      TableName: this.userTable,
+      IndexName: 'AccessTokenIndex',
+      ExpressionAttributeValues: {
+        ':accessToken': accessToken
+      },
+      KeyConditionExpression: 'accessToken = :accessToken'
+    })
+
+    const result = await this.client.send(command)
+
+    return result.Items !== undefined && result.Items.length > 0
   }
 
   async getUserHistory(accessToken: string): Promise<PublicSearchHistory[]> {

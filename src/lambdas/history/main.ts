@@ -9,6 +9,8 @@ export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   try {
+    const historyService = new HistoryService(process.env.AWS_REGION)
+
     const accessToken = event.queryStringParameters?.access_token
     if (!accessToken) {
       return {
@@ -20,7 +22,16 @@ export const handler = async (
       }
     }
 
-    const historyService = new HistoryService(process.env.AWS_REGION)
+    if (!(await historyService.isValidToken(accessToken))) {
+      return {
+        statusCode: 401,
+        body: JSON.stringify({
+          error: 'Unauthorised',
+          message: 'Invalid access token'
+        })
+      }
+    }
+
     const historyData = await historyService.getUserHistory(accessToken)
     return {
       statusCode: 200,
