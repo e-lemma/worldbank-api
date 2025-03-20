@@ -1,7 +1,7 @@
 ---
-name: "Quick Fix"
+name: 'Quick Fix'
 about: Small, quick changes like config updates, .gitignore changes, or minor fixes.
-title: "[Quick Fix]: "
+title: '[Quick Fix]: '
 labels: task
 assignees: ''
 ---

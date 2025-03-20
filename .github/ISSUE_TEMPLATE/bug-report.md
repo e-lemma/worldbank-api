@@ -1,10 +1,9 @@
 ---
 name: "Bug report \U0001F41B"
 about: Report a bug to help improve the project
-title: "[Bug]: "
+title: '[Bug]: '
 labels: bug
 assignees: ''
-
 ---
 
 **Describe the bug**
@@ -12,6 +11,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behaviour:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
